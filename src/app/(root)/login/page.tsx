@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image';
 import { useState, useEffect, PropsWithChildren } from 'react';
 type prop = PropsWithChildren<{
   type:string
@@ -7,7 +8,7 @@ type prop = PropsWithChildren<{
 }>
 export default function AuthPage({  type}:prop) {
   const [currentImage, setCurrentImage] = useState(0);
-  const images = ["/image1.jpg", "/image2.jpg", "/image3.jpg"];
+  const images = ["/login_kids.jpg", "/login_pant_shirt.jpg", "/login_woman.jpg"];
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -22,10 +23,12 @@ export default function AuthPage({  type}:prop) {
       <div className="w-full max-w-4xl flex bg-white rounded-lg shadow-lg overflow-hidden">
         {/* Left Section */}
         <div className="w-1/2 relative">
-          <img
+          <Image
             src={images[currentImage]}
             alt="Slideshow"
             className="w-full h-full object-cover"
+            width={500}
+            height={500}
           />
           <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
             {images.map((_, index) => (
@@ -99,11 +102,11 @@ export default function AuthPage({  type}:prop) {
 
           <div className="flex justify-center space-x-4">
             <button className="p-3 border rounded-lg flex items-center space-x-2 hover:bg-gray-100">
-              <img src="/google-icon.png" alt="Google" className="w-5 h-5" />
+              <Image src="/search.png" alt="Google" className="w-5 h-5" width={100} height={100} />
               <span>Google</span>
             </button>
             <button className="p-3 border rounded-lg flex items-center space-x-2 hover:bg-gray-100">
-              <img src="/apple-icon.png" alt="Apple" className="w-5 h-5" />
+              <img src="/apple.png" alt="Apple" className="w-5 h-5" width={100} height={100} />
               <span>Apple</span>
             </button>
           </div>

@@ -4,8 +4,8 @@ export function MainSection() {
     return (
       <header className="bg-white py-16 text-center">
         <div className="relative mt-8 inline-block">
-          <button className="px-6 py-2 text-sm text-gray-200 rounded-full border-2 border-gray-400 relative overflow-hidden">
-            <span className="relative z-10">New spring collection 2023</span>
+          <button className="px-6 py-2 text-sm text-gray-500 rounded-full border-2 border-gray-400 relative overflow-hidden mb-3">
+            <span className="relative z-10">New winter collection 2025</span>
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-400 to-transparent animate-shimmer"></div>
           </button>
         </div>

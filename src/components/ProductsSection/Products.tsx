@@ -5,13 +5,13 @@ import ProductCard from './ProductCard';
 import { useState } from 'react';
 
 export function Products() {
-  const categories = ['Gadgets', 'Fashion', 'Toys', 'Education', 'Beauty', 'Travel', 'Fitness', 'Furniture', 'Sneakers'];
+  const categories = ['T-Shirts', 'Leggies', 'Jeans', 'Sportswear', 'Formal', 'Casual', 'Tops', 'Skirts', 'Trousers'];
   const [activeCategory, setActiveCategory] = useState(categories[0]);
   const products = [
-    { name: 'Laptop Sleeve MacBook', price: 59, image: '/laptop-sleeve.png', rating: 4.5, reviews: 121 },
-    { name: 'AirPods Max', price: 559, image: '/airpods-max.png', rating: 4.7, reviews: 200 },
-    { name: 'Flower Laptop Sleeve', price: 39, image: '/flower-sleeve.png', rating: 4.4, reviews: 100 },
-    { name: 'Product Name', price: 59, image: '/product-name.png', rating: 4.2, reviews: 90 },
+    { name: 'Hoodies', price: 59, imageUrl: '/hoodies.jpg', rating: 4.5, reviews: 121, color:'red'},
+    { name: 'Jackets', price: 559, imageUrl: '/jackets.jpg', rating: 4.7, reviews: 200, color:'blue' },
+    { name: 'Jeans', price: 39, imageUrl: '/jeans.jpg', rating: 4.4, reviews: 100, color:'yellow' },
+    { name: 'Shirt', price: 59, imageUrl: '/shirt.jpg', rating: 4.2, reviews: 90 , color:'green'},
     // Add more products here
   ];
 
@@ -31,7 +31,7 @@ export function Products() {
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6 container mx-auto px-4">
         {products.map((product, index) => (
-          <ProductCard key={index} product={product} />
+          <ProductCard price={product.price} imageUrl={product.imageUrl} rating={product.rating} reviews={product.reviews} color={product.color} name={product.name}/>
         ))}
       </div>
       <div className="flex justify-center mt-8">

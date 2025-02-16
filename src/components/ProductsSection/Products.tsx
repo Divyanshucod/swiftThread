@@ -1,27 +1,46 @@
 'use client'
 
+import React, { useEffect } from 'react';
 import CatTag from './CatTag';
 import ProductCard from './ProductCard';
 import { useState } from 'react';
-
+import { toast } from 'react-toastify';
+import axios from 'axios';
+interface Product {
+  _id:string,
+  title: string,
+  price: string,
+  description:string,
+  sizes:string[],
+  gender:string,
+  material:string,
+  productImages:string[]
+}
 export function Products() {
   const categories = ['T-Shirts', 'Leggies', 'Jeans', 'Sportswear', 'Formal', 'Casual', 'Tops', 'Skirts', 'Trousers'];
   const [activeCategory, setActiveCategory] = useState(categories[0]);
-  const products = [
-    { name: 'Hoodies', price: 59, imageUrl: '/hoodies.jpg', rating: 4.5, reviews: 121, color:'red'},
-    { name: 'Jackets', price: 559, imageUrl: '/jackets.jpg', rating: 4.7, reviews: 200, color:'blue' },
-    { name: 'Jeans', price: 39, imageUrl: '/jeans.jpg', rating: 4.4, reviews: 100, color:'yellow' },
-    { name: 'Shirt', price: 59, imageUrl: '/shirt.jpg', rating: 4.2, reviews: 90 , color:'green'},
-    // Add more products here
-  ];
-
+  const [allProducts,setAllProducts] = React.useState<Product[]>([])
   const handleCategoryChange = (category:string) => {
     setActiveCategory(category);
   };
 
+  useEffect(()=>{
+    async function getProducts() {
+       try{
+          const response = await axios.get('/api/products');
+          console.log(response);
+          
+          setAllProducts(response.data.ProductInfo)
+       // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       }catch(error:any){
+        toast.error(error.message)
+       }
+    }
+    getProducts()
+  },[])
   return (
     <section className="bg-white py-8">
-      <h2 className="text-2xl font-bold text-center mb-6">Today's Best Deals For You!</h2>
+      <h2 className="text-2xl font-bold text-center mb-6"> Today&apos;s Best Deals For You! </h2>
       <div className="mb-8 container mx-auto px-4">
         <CatTag
           categories={categories}
@@ -30,8 +49,8 @@ export function Products() {
         />
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6 container mx-auto px-4">
-        {products.map((product, index) => (
-          <ProductCard price={product.price} imageUrl={product.imageUrl} rating={product.rating} reviews={product.reviews} color={product.color} name={product.name}/>
+        {allProducts.map((product) => (
+          <ProductCard key={product._id} price={product.price} imageUrl={product.productImages[0]} rating={109} reviews={1092} name={product.title}/>
         ))}
       </div>
       <div className="flex justify-center mt-8">

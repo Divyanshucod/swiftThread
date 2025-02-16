@@ -37,9 +37,9 @@ export default function Navbar() {
           {/* Search Bar */}
           <SearchBar/>
 
-          <button className="text-lg font-medium hover:underline">Login</button>
-          <button className="text-lg font-medium hover:underline">Sign Up</button>
-          <button className="text-xl p-2 rounded-full bg-gray-200">🛒</button>
+          <Link href='/login' className="text-lg font-medium hover:underline">Login</Link>
+          <Link href='/signup' className="text-lg font-medium hover:underline">Sign Up</Link>
+          <Link href='/cart' className="text-xl p-2 rounded-full bg-gray-200">🛒</Link>
         </div>
       </div>
     </nav>

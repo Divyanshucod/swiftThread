@@ -47,7 +47,7 @@ const Cart = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="col-span-2">
           {products.map((product) => (
-            <CartItem {...product} />
+            <CartItem key={product.name} {...product} />
           ))}
         </div>
 

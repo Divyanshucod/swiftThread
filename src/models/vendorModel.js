@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 
-const userSchema = new mongoose.Schema({
+const vendorSchema = new mongoose.Schema({
     email: {
       type: String,
       required: true,
@@ -19,14 +19,10 @@ const userSchema = new mongoose.Schema({
     profilePicture: {
       type: String, // URL to profile picture (optional)
     },
-    providerId: {
-      type: String, // allow multiple null values
-    },
-    provider: {
-      type: String, // Store the auth provider (e.g., 'google')
-      enum: ['google', 'manual'], // This helps differentiate between manual and OAuth logins
-      required: true,  // This field is essential to know which login method was used
-    },
+    createdProducts: [{ 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "products" 
+    }],
     createdAt: {
       type: Date,
       default: Date.now,
@@ -37,7 +33,7 @@ const userSchema = new mongoose.Schema({
     },
   });
 
-  const User =mongoose.models.users || mongoose.model('users',userSchema)
+  const Vendor =mongoose.models.vendors || mongoose.model('vendors',vendorSchema)
 
-  export default User;
+  export default Vendor;
   

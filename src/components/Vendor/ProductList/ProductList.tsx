@@ -25,7 +25,7 @@ export const ProductList = () => {
         setProducts(response.data.products)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error:any) {
-        if(error.status !== 500){
+        if(error.status === 500){
           return toast.error(error.response.data.message);
          }
         toast.error(error.message)

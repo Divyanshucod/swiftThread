@@ -1,5 +1,6 @@
 import Connection from "@/dbConfig/dbConfig";
 import User from "@/models/userModel";
+import Vendor from '@/models/vendorModel'
 import { NextRequest, NextResponse } from "next/server";
 import bcryptjs from "bcryptjs";
 
@@ -20,20 +21,28 @@ export async function POST(request: NextRequest) {
       ProfilePic,
       providerId,
       provider,
+      isVendor
     } = reqBody;
     console.log({
       fisrtName:firstName,
       lastName: lastName,
       email: email,
-      password:password
+      password:password,
+      isVendor:isVendor
     });
     
-    const user = await User.findOne({ email: email });
-   
+
+    let user = undefined
+    if(isVendor){
+    user = await User.findOne({ email: email });
+    }
+    else{
+      user = await Vendor.findOne({ email: email });
+    }
     // check user already exist
     if (user) {
       return NextResponse.json(
-        { message: "User already exist. please login!" },
+        { message: ` ${isVendor ? 'Vendor' : 'User'} already exist. please login!` },
         { status: 400 }
       );
     }
@@ -51,7 +60,8 @@ export async function POST(request: NextRequest) {
         ProfilePic,
         provider,
         providerId,
-        password
+        password,
+        isVendor
       );
       return NextResponse.json({ message: "User Created Successfully!" }, { status: 200 });
     } else {
@@ -62,14 +72,15 @@ export async function POST(request: NextRequest) {
         lastName,
         email,
         "",
+        "manual",
         "",
-        "",
-        hashedPassword
+        hashedPassword,
+        isVendor
       );
 
       console.log(createdUser);
 
-      return NextResponse.json({ message: "User Created Successfully!" }, { status: 200 });
+      return NextResponse.json({ message: ` ${isVendor ? 'Vendor' : 'User'} Created Successfully! `}, { status: 200 });
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
@@ -83,40 +94,58 @@ async function createUser(
   email: string,
   profilePic: string,
   provider: string,
-  providerId: string,
-  password: string
+  providerId: string | null,
+  password: string,
+  isVendor: boolean
 ) {
-    try{
-        if (providerId.length !== 0) {
-            const user = new User({
-              firstName: firstName,
-              lastName: lastName,
-              email: email,
-              profilePicture: profilePic,
-              provider: provider,
-              providerId: providerId,
-            });
-        
-            await user.save();
-        
-            return user;
-          } else {
-            const user = new User({
-              firstName: firstName,
-              lastName: lastName,
-              email: email,
-              password: password,
-              provider:'manual'
-            });
-        
-            await user.save();
-        
-            return user;
-          }
-    }
-    catch(error){
-        console.log("error in createUser function",error);
-        
-    }
-  
+  try {
+    // If providerId is not provided, explicitly set it to null (to match schema)
+    const formattedProviderId = providerId?.trim() ? providerId : null;
+
+    // If the user signs up via OAuth (Google, etc.)
+    if (provider !== 'manual') {
+      const user = new User({
+        firstName,
+        lastName,
+        email,
+        profilePicture: profilePic,
+        provider,
+        providerId: formattedProviderId, // Will be null for manual users
+      });
+
+      await user.save();
+      return user;
+    } 
+    
+    // If the user signs up manually (email + password)
+    if (!isVendor) {
+      const user = new User({
+        firstName,
+        lastName,
+        email,
+        password,  // Store hashed password for security in actual implementation
+        provider: 'manual',
+        providerId: formattedProviderId, // Will be null for manual users
+      });
+
+      await user.save();
+      return user;
+    } 
+    
+    // If the user is a vendor
+    const vendor = new Vendor({
+      firstName,
+      lastName,
+      email,
+      password, // Store hashed password for security
+    });
+
+    await vendor.save();
+    return vendor;
+    
+  } catch (error) {
+    console.error("Error in createUser function:", error);
+    throw new Error("User creation failed.");
+  }
 }
+

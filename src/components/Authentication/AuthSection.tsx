@@ -16,6 +16,7 @@ type Prop = PropsWithChildren<{
 export default function AuthSection({ type }: Prop) {
   const [currentImage, setCurrentImage] = React.useState<number>(0);
   const [disableButton, setDisableButton] = React.useState<boolean>(false);
+  const [isVendor,setIsVendor] = React.useState<boolean>(false)
   const router = useRouter()
   const images = [
     "/login_kids.jpg",
@@ -51,12 +52,12 @@ export default function AuthSection({ type }: Prop) {
       try {
         setDisableButton(true)
         if (type === "/signup") {
-           const response = await axios.post('/api/users/signup',values)
+           const response = await axios.post('/api/users/signup',{...values, isVendor:isVendor})
            toast.success(response.data.message)
             router.push('/login')
         }
         else{
-          const response = await axios.post('/api/users/login',values)
+          const response = await axios.post('/api/users/login',{...values, isVendor:isVendor})
           toast.success(response.data.message)
           router.push('/')
         }
@@ -180,6 +181,14 @@ export default function AuthSection({ type }: Prop) {
                 </label>
               </div>
             )}
+            <div className="flex justify-between gap-3">
+               <div onClick ={()=> setIsVendor(!isVendor)} className={`w-full p-3 rounded-lg flex justify-center items-center mb-4 ${!isVendor ? 'bg-blue-500 text-white hover:bg-blue-600' : 'bg-white text-black border border-slate-800'}`}>
+                 User
+               </div>
+               <div onClick = {()=> setIsVendor(!isVendor)} className={`w-full p-3 rounded-lg flex justify-center items-center mb-4 ${isVendor ? 'bg-blue-500 text-white hover:bg-blue-600' : 'bg-white text-black border border-slate-800'}`}>
+                  Vendor
+               </div>
+            </div>
             <button
               type="submit"
               className={`w-full p-3 rounded-lg mb-4 ${

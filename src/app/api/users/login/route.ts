@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import bcryptjs from "bcryptjs";
 import jwt from 'jsonwebtoken'
 import { cookies } from "next/headers";
+import Vendor from "@/models/vendorModel";
 
 Connection();
 
@@ -16,14 +17,29 @@ export async function POST(request: NextRequest) {
     const {
       email,
       password,
-      provider
+      provider,
+      isVendor
     } = reqBody;
+     console.log(
+      reqBody
+     );
      
-    const user = await User.findOne({email:email})
-     if(!user){
-         return NextResponse.json({message:"User doesn't exists.please sign up!"},{status:400})
-     }
-     console.log(user);
+    let user = undefined
+    if(!isVendor){
+       user = await User.findOne({email:email})
+      if(!user){
+        return NextResponse.json({message:"User doesn't exists.please sign up!"},{status:400})
+       }
+    console.log(user);
+    }
+    else{
+      user = await Vendor.findOne({email:email})
+      if(!user){
+        return NextResponse.json({message:"Vendor doesn't exists.please sign up!"},{status:400})
+       }
+    console.log(user);
+    }
+    
      
      if(!provider){
         // compare password
@@ -33,7 +49,7 @@ export async function POST(request: NextRequest) {
         );
         
         if(!matched){
-            return NextResponse.json({message:"email and password is incorrect!"},{status:400})
+            return NextResponse.json({message:"email or password is incorrect!"},{status:400})
         }
      }
     console.log('before the token creation');
@@ -42,7 +58,8 @@ export async function POST(request: NextRequest) {
     const tokenData = {
         id: user._id,
         firstName: user.firstName,
-        email:user.email
+        email:user.email,
+        isVendor:isVendor
     }
 
     // token  creation
@@ -50,6 +67,7 @@ export async function POST(request: NextRequest) {
     console.log(
       'after token creation'
     );
+    console.log(token);
     const cookieStore = await cookies();
     cookieStore.set('userId',token)
     return NextResponse.json({

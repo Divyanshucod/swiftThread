@@ -74,6 +74,8 @@ export const AddProductForm =({ onSubmit }: AddProductFormProps) => {
         formData.images.forEach((image) => productData.append("images", image)); // Append images as file
         
         const response = await axios.post('/api/vendors/products',productData)
+        console.log(response);
+        
         toast.success(response.data.message);
         onSubmit(productData);
         

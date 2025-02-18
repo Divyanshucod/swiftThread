@@ -2,6 +2,7 @@
 import { AddProductForm } from "@/components/Vendor/ProductList/AddProductForm";
 import { ProductList } from "@/components/Vendor/ProductList/ProductList";
 import { useState } from "react";
+import { ToastContainer } from "react-toastify";
 
 // Main Vendor Dashboard Component
 const VendorDashboard = () => {
@@ -20,6 +21,7 @@ const VendorDashboard = () => {
   
     return (
       <div className="p-8 bg-gray-100 min-h-screen">
+        <ToastContainer />
         <h1 className="text-3xl font-bold mb-6">Vendor Dashboard</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <ProductList products={products} onEdit={() => {}} onDelete={deleteProduct} />

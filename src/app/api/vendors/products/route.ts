@@ -88,8 +88,53 @@ export async function POST(req: NextRequest) {
       material,
       productImages: imageUrls,
     });
+    
+    const val = await newProduct.save();
+    // ---repeated ---// keep only one
+    const cookieStore = await cookies(); // Get cookie store
+    const userIdCookie = cookieStore.get("userId"); // Retrieve cookie
 
-    await newProduct.save();
+    if (!userIdCookie || !userIdCookie?.value) {
+      return NextResponse.json(
+        { message: "Please login, before accessing the products" },
+        { status: 400 }
+      );
+    }
+    let decodedData: JwtPayload;
+    try {
+      decodedData = jwt.verify(
+        userIdCookie.value,
+        process.env.JWT_TOKEN_SECRET as string
+      ) as JwtPayload;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+      return NextResponse.json(
+        { message: error.message },
+        { status: 401 }
+      );
+    }
+
+    if (decodedData && !decodedData.isVendor) {
+      return NextResponse.json(
+        { message: "only vendors can access this endpoint!" },
+        { status: 400 }
+      );
+    }
+    
+    if (!decodedData.id) {
+      return NextResponse.json({ message: "Invalid token: User ID missing" }, { status: 400 });
+    }
+   // ---- ///
+    const updatedDocument = await Vendor.findByIdAndUpdate(
+      { _id: decodedData.id },
+      { $push: { createdProducts: val._id } }, // Use $push to add to the array
+      { new: true, runValidators: true } // Options: return updated document, run validators
+    );
+
+    if (!updatedDocument) {
+      return NextResponse.json({ message: "Document Not Found!" }, { status: 400 });
+    }
+    
     return NextResponse.json(
       { message: "Product added in the stock" },
       { status: 200 }
@@ -141,7 +186,7 @@ export async function GET() {
     }
     
     const userInfo = await Vendor.findById(decodedData.id);
-
+    
     if (!userInfo) {
       return NextResponse.json(
         { message: "Vendor is not registered, yet!" },

@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import Connection from "@/dbConfig/dbConfig";
 import { cookies } from "next/headers";
-import User from "@/models/userModel";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import Vendor from "@/models/vendorModel";
 

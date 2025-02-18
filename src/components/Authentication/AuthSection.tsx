@@ -8,6 +8,8 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import Cookies from 'js-cookie'
+import { jwtDecode } from "jwt-decode";
 
 type Prop = PropsWithChildren<{
   type: string;
@@ -57,8 +59,15 @@ export default function AuthSection({ type }: Prop) {
             router.push('/login')
         }
         else{
+          console.log('inside the login');
           const response = await axios.post('/api/users/login',{...values, isVendor:isVendor})
           toast.success(response.data.message)
+          const token = Cookies.get('userId') as string
+          const decodedToken: { isVendor: boolean } = jwtDecode(token)
+          // if the user is vendor then redirect to '/vendor/*' path
+          if(decodedToken && decodedToken.isVendor){
+            return router.push('/vendor/products')
+          }
           router.push('/')
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

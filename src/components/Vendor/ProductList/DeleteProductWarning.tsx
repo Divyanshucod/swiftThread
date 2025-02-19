@@ -1,6 +1,8 @@
 'use client'
 
+import axios from "axios";
 import React, { useState } from "react";
+import { toast } from "react-toastify/unstyled";
 
 interface DeleteProductWarningProps {
   productName: string;
@@ -20,15 +22,26 @@ const DeleteProductWarning: React.FC<DeleteProductWarningProps> = ({ productName
       setError("");
     }
   };
-  const handleConfirmation = ()=>{
+  const handleConfirmation = async ()=>{
     //TODO : call the backend to delete the product via using _id of that
-    setdeleteWarVisible(false)
+    try{
+      const response = await axios.delete(`/api/vendors/products?id=${id}`)
+      toast.success(response.data?.message)
+      setdeleteWarVisible(false)
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    }catch(error:any){
+      if(error.status !== 500){
+        return toast.error(error.response.data.message)
+       }
+        toast.error(error.message)
+    }
   }
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="p-4 bg-white shadow rounded-lg w-96">
         <h2 className="text-xl font-bold mb-4">Warning</h2>
-        <p>To delete the {<b>productName</b>}, please enter the product name below:</p>
+        <p>To delete the {<b>{productName}</b>}, please enter the product name below:</p>
         <input
           type="text"
           placeholder="Enter product name"

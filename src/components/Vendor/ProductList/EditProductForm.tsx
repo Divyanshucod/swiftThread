@@ -1,5 +1,6 @@
 'use client'
 import axios from "axios";
+import Image from "next/image";
 import React from "react";
 import { toast } from "react-toastify";
 
@@ -11,6 +12,7 @@ import { toast } from "react-toastify";
     price: string;
     gender: string;
     material: string;
+    id:string;
     setEditFormVisible :React.Dispatch<React.SetStateAction<boolean>>; 
   };
 
@@ -21,6 +23,7 @@ const EditProductForm = ({
     price,
     gender,
     material,
+    id,
     setEditFormVisible
 }:FormData) => {
     const [formData, setFormData] = React.useState({
@@ -29,9 +32,11 @@ const EditProductForm = ({
         sizes: sizes,
         price: price,
         gender: gender,
-        material: material
+        material: material,
+        images: [] as File[],
         // Store actual files
       });
+      const [previewImages, setPreviewImages] = React.useState<string[]>([]);
       const Sizes = ['S', 'M', 'L', 'XL', 'XXL'];
       const materials = ['Cotton', 'Polyester', 'Wool', 'Silk', 'Denim'];
       const genders = ['Men', 'Women', 'Kids', 'Unisex'];
@@ -39,7 +44,7 @@ const EditProductForm = ({
         setFormData((prev) => ({
           ...prev,
           sizes: prev.sizes.includes(size)
-            ? prev.Sizes.filter((s) => s !== size)
+            ? prev.sizes.filter((s) => s !== size)
             : [...prev.sizes, size],
         }));
       };
@@ -48,7 +53,20 @@ const EditProductForm = ({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         setFormData((prev:any) => ({ ...prev, [name]: value }));
       };
+      const handleImages = (e: React.ChangeEvent<HTMLInputElement>)=>{
+           const files = e.target.files;
+           if(files){
+              const newFiles = Array.from(files)
+              const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
+              
+              setFormData(prev => ({
+                ...prev,
+                images:[...prev.images,...newFiles]
+            }))
 
+            setPreviewImages((prev)=> [...prev,...newPreviews])
+           }
+      }
       const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
     
@@ -60,11 +78,9 @@ const EditProductForm = ({
             productData.append("price", formData.price);
             productData.append("gender", formData.gender);
             productData.append("material", formData.material);
-        
-            
-            const response = await axios.post('/api/vendors/products',productData)
-            toast.success(response.data.message);
-            
+            formData.images.forEach((image) => productData.append("images", image));
+            productData.append('id',id)
+            const response = await axios.put('/api/vendors/products',productData)
             toast.success(response.data.message);
             setEditFormVisible(false)
            
@@ -151,7 +167,17 @@ const EditProductForm = ({
             </option>
           ))}
         </select>
-        
+        {/* Image Upload Field */}
+        <input type="file" name="images" className="w-full p-2 border rounded" accept="image/*" multiple onChange={handleImages} />
+
+        {/* Preview of uploaded images */}
+        {previewImages.length > 0 && (
+          <div className="flex gap-2 mt-4">
+            {previewImages.map((image, index) => (
+              <Image key={index} src={image} height={100} width={100} alt={`Product Image ${index + 1}`} className="w-20 h-20 object-cover rounded" />
+            ))}
+          </div>
+        )}
         <button onClick={()=> setEditFormVisible(false)} className="w-full p-2 bg-green-500 text-white rounded">
           Cancel
         </button>

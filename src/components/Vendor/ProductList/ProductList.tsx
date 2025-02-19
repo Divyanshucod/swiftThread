@@ -67,8 +67,10 @@ export const ProductList = () => {
                     <button onClick={() => setEditFormVisible(!editFormVisible)} className="bg-blue-500 text-white px-2 py-1 rounded mr-2">Edit</button>
                     <button onClick={() => setdeleteWarVisible(!deleteWarVisible)} className="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
                   </td>
-                  {editFormVisible && <EditProductForm price={product.price} title={product.title} description={product.description} sizes={product.sizes} gender={product.gender} material={product.material} setEditFormVisible={setEditFormVisible}/>}
-                  {deleteWarVisible && <DeleteProductWarning productName={product.title} setdeleteWarVisible={setdeleteWarVisible} id={product._id}/>}
+                  
+                  {editFormVisible && <td> <EditProductForm price={product.price} title={product.title} description={product.description} sizes={product.sizes} gender={product.gender} material={product.material} setEditFormVisible={setEditFormVisible} id={product._id}/> </td>}
+                  {deleteWarVisible && <td><DeleteProductWarning productName={product.title} setdeleteWarVisible={setdeleteWarVisible} id={product._id}/></td>}
+                  
                 </tr>
               ))}
             </tbody>

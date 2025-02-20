@@ -38,6 +38,16 @@ export function Products() {
     }
     getProducts()
   },[])
+
+  const handleAddToCart = async (id:string)=>{
+       try {
+         const response = await axios.post('/api/cart',{id})
+         toast.success(response.data.message)
+       // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       } catch (error:any) {
+          toast.error(error.message)
+       }
+  }
   return (
     <section className="bg-white py-8">
       <h2 className="text-2xl font-bold text-center mb-6"> Today&apos;s Best Deals For You! </h2>
@@ -50,7 +60,7 @@ export function Products() {
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6 container mx-auto px-4">
         {allProducts.map((product) => (
-          <ProductCard key={product._id} price={product.price} imageUrl={product.productImages[0]} rating={109} reviews={1092} name={product.title}/>
+          <ProductCard key={product._id} id={product._id} price={product.price} imageUrl={product.productImages[0]} rating={109} reviews={1092} name={product.title} handleAddToCart={handleAddToCart}/>
         ))}
       </div>
       <div className="flex justify-center mt-8">

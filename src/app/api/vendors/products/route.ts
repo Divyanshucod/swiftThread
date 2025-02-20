@@ -2,9 +2,8 @@ import Product from "@/models/productModel";
 import { NextRequest, NextResponse } from "next/server";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import Connection from "@/dbConfig/dbConfig";
-import { cookies } from "next/headers";
-import jwt, { JwtPayload } from "jsonwebtoken";
 import Vendor from "@/models/vendorModel";
+import { getUserVendorId } from "@/handlers/getUserVendorId";
 
 const credentials = {
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -89,43 +88,9 @@ export async function POST(req: NextRequest) {
     });
 
     const val = await newProduct.save();
-    // ---repeated ---// keep only one
-    const cookieStore = await cookies(); // Get cookie store
-    const userIdCookie = cookieStore.get("userId"); // Retrieve cookie
-
-    if (!userIdCookie || !userIdCookie?.value) {
-      return NextResponse.json(
-        { message: "Please login, before accessing the products" },
-        { status: 400 }
-      );
-    }
-    let decodedData: JwtPayload;
-    try {
-      decodedData = jwt.verify(
-        userIdCookie.value,
-        process.env.JWT_TOKEN_SECRET as string
-      ) as JwtPayload;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      return NextResponse.json({ message: error.message }, { status: 401 });
-    }
-
-    if (decodedData && !decodedData.isVendor) {
-      return NextResponse.json(
-        { message: "only vendors can access this endpoint!" },
-        { status: 400 }
-      );
-    }
-
-    if (!decodedData.id) {
-      return NextResponse.json(
-        { message: "Invalid token: User ID missing" },
-        { status: 400 }
-      );
-    }
-    // ---- ///
+    const userId = await getUserVendorId('vendors')
     const updatedDocument = await Vendor.findByIdAndUpdate(
-      { _id: decodedData.id },
+      { _id: userId },
       { $push: { createdProducts: val._id } }, // Use $push to add to the array
       { new: true, runValidators: true } // Options: return updated document, run validators
     );
@@ -143,53 +108,17 @@ export async function POST(req: NextRequest) {
     );
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    return NextResponse.json(
-      { message: error.message || "Failed to create product" },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: error.message }, {
+      status: error.statusCode || 500,
+    });
   }
 }
 
 export async function GET() {
   // ToDo: send all the products added by specific user
   try {
-    console.log('called bakend get');
-    
-    const cookieStore = await cookies(); // Get cookie store
-    const userIdCookie = cookieStore.get("userId"); // Retrieve cookie
-
-    if (!userIdCookie || !userIdCookie?.value) {
-      return NextResponse.json(
-        { message: "Please login, before accessing the products" },
-        { status: 400 }
-      );
-    }
-    let decodedData: JwtPayload;
-    try {
-      decodedData = jwt.verify(
-        userIdCookie.value,
-        process.env.JWT_TOKEN_SECRET as string
-      ) as JwtPayload;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      return NextResponse.json({ message: error.message }, { status: 401 });
-    }
-
-    if (decodedData && !decodedData.isVendor) {
-      return NextResponse.json(
-        { message: "only vendors can access this endpoint!" },
-        { status: 400 }
-      );
-    }
-
-    if (!decodedData.id) {
-      return NextResponse.json(
-        { message: "Invalid token: User ID missing" },
-        { status: 400 }
-      );
-    }
-
-    const userInfo = await Vendor.findById(decodedData.id);
+    const userId = await getUserVendorId('vendors')
+    const userInfo = await Vendor.findById(userId);
 
     if (!userInfo) {
       return NextResponse.json(
@@ -209,10 +138,9 @@ export async function GET() {
     return NextResponse.json({ products: products }, { status: 200 });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    return NextResponse.json(
-      { message: error.message || "Failed to create product" },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: error.message }, {
+      status: error.statusCode || 500,
+    });
   }
 }
 
@@ -292,9 +220,11 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({message:'Product updated successfully!'},{status:200})
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ message: error.message }, {
+      status: error.statusCode || 500,
+    });
   }
-}
+}  // use one instance of aws upload image code do not repeat the code
 export async function DELETE(req:NextRequest){
   try{
     const url = new URL(req.url); // Create a URL object from the request URL
@@ -303,42 +233,9 @@ export async function DELETE(req:NextRequest){
     if(!id){
       return NextResponse.json({message:'id is required!'},{status:400})
     }
-    // vendor check
-    const cookieStore = await cookies(); // Get cookie store
-    const userIdCookie = cookieStore.get("userId"); // Retrieve cookie
-
-    if (!userIdCookie || !userIdCookie?.value) {
-      return NextResponse.json(
-        { message: "Please login, before accessing the products" },
-        { status: 400 }
-      );
-    }
-    let decodedData: JwtPayload;
-    try {
-      decodedData = jwt.verify(
-        userIdCookie.value,
-        process.env.JWT_TOKEN_SECRET as string
-      ) as JwtPayload;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      return NextResponse.json({ message: error.message }, { status: 401 });
-    }
-
-    if (decodedData && !decodedData.isVendor) {
-      return NextResponse.json(
-        { message: "only vendors can access this endpoint!" },
-        { status: 400 }
-      );
-    }
-
-    if (!decodedData.id) {
-      return NextResponse.json(
-        { message: "Invalid token: User ID missing" },
-        { status: 400 }
-      );
-    }
-
-    const userInfo = await Vendor.findById(decodedData.id);
+    
+    const userId = await getUserVendorId('vendors')
+    const userInfo = await Vendor.findById(userId);
 
     if (!userInfo) {
       return NextResponse.json(
@@ -350,17 +247,19 @@ export async function DELETE(req:NextRequest){
     if (!deletedProduct) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
-    const vendorInfoUpdated = await Vendor.findByIdAndUpdate(decodedData.id,{$pull:{createdProducts:id}}, { new: true, runValidators: true });
+    const vendorInfoUpdated = await Vendor.findByIdAndUpdate(userId,{$pull:{createdProducts:id}}, { new: true, runValidators: true });
     if(!vendorInfoUpdated){
       return NextResponse.json(
         { message: "Vendor Not Exist!" },
         { status: 400 }
       );
     }
-    return NextResponse.json({ message: `Product deleted successfully!`, deletedProduct });
+    return NextResponse.json({ message: `Product deleted successfully!`, deletedProduct },{status:200});
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }catch(error:any){
-    return NextResponse.json({error:error.message},{status:500})
+    return NextResponse.json({ message: error.message }, {
+      status: error.statusCode || 500,
+    });
   }
 }

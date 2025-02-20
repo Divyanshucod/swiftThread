@@ -9,6 +9,8 @@ interface ProductProps {
   rating: number;
   reviews: number;
   imageUrl: string;
+  handleAddToCart:(id:string)=> void,
+  id:string
 }
 
 const ProductCard: React.FC<ProductProps> = ({
@@ -17,6 +19,8 @@ const ProductCard: React.FC<ProductProps> = ({
   rating,
   reviews,
   imageUrl,
+  handleAddToCart,
+  id
 }) => {
   const [isFilled, setIsFilled] = React.useState<boolean>(false);
   return (
@@ -44,7 +48,7 @@ const ProductCard: React.FC<ProductProps> = ({
 
       <p className="text-xl font-semibold">${price}</p>
 
-      <button className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 rounded-lg">
+      <button className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 rounded-lg" onClick={() => handleAddToCart(id)}>
         Add to Cart
       </button>
     </div>

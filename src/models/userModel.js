@@ -27,6 +27,10 @@ const userSchema = new mongoose.Schema({
       enum: ['google', 'manual'], // This helps differentiate between manual and OAuth logins
       required: true,  // This field is essential to know which login method was used
     },
+    cartProducts:[{
+      type: mongoose.Schema.Types.ObjectId, 
+        ref: "products" 
+    }],
     createdAt: {
       type: Date,
       default: Date.now,

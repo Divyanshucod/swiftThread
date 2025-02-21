@@ -22,8 +22,6 @@ export const ProductList = () => {
     async function fetchProducts(){
       try {
         const response = await axios.get(`/api/vendors/products`)
-        console.log(response);
-        
         if(!response){
         setProducts([])
         }

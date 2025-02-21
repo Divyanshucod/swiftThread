@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, PropsWithChildren } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import {toast } from "react-toastify";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
@@ -92,7 +92,6 @@ export default function AuthSection({ type }: Prop) {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-200">
-      <ToastContainer />
       <div className="w-full max-w-4xl flex bg-white rounded-lg shadow-lg overflow-hidden">
         {/* Left Section */}
         <div className="w-1/2 relative">

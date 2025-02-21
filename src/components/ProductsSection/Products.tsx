@@ -45,7 +45,10 @@ export function Products() {
          toast.success(response.data.message)
        // eslint-disable-next-line @typescript-eslint/no-explicit-any
        } catch (error:any) {
-          toast.error(error.message)
+        if(error.status !== 500){
+          return toast.error(error.response.data.message);
+         }
+        toast.error(`Error: ${error.message}`);
        }
   }
   return (

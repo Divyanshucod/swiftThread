@@ -87,9 +87,10 @@ export async function GET() {
     // fetching products info
     const products = [];
     for (const id of userInfo?.cartProducts) {
-      const product = await Product.findById(id);
+      const product = await Product.findById(id).lean(); // used lean just to get plain javascript object instead of mongoose document 
       if (product) {
-        products.push(product);
+        const updatedProduct = {...product,quantity:1}
+        products.push(updatedProduct);
       }
     }
     return NextResponse.json({ products: products }, { status: 200 });

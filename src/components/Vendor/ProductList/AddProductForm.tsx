@@ -5,11 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
-interface AddProductFormProps {
-  onSubmit: (product: FormData) => void; // Update function to handle FormData
-}
-
-export const AddProductForm =({ onSubmit }: AddProductFormProps) => {
+export const AddProductForm =() => {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -77,7 +73,6 @@ export const AddProductForm =({ onSubmit }: AddProductFormProps) => {
         console.log(response);
         
         toast.success(response.data.message);
-        onSubmit(productData);
         
         toast.success(response.data.message);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

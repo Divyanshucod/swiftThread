@@ -1,0 +1,5 @@
+// upcoming tasks
+1. backend is done for filters
+2. frontend part need to handle (UI is done to show search products) but redirecting and fetching the data is remaining
+3. other search filter like only category , gender, brand based filter need to add (means frontend api call only because backend will use the same api for filters)
+

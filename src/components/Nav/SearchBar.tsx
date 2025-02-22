@@ -1,16 +1,17 @@
 'use client'
 import { Transition } from '@headlessui/react';
 import React, { useEffect, useRef } from 'react';
-type Props = {}
 
-const SearchBar = (props: Props) => {
+const SearchBar = () => {
     const [genderOpen, setGenderOpen] = React.useState(false);
     const [colorOpen, setColorOpen] = React.useState(false);
     const [selectedGender, setSelectedGender] = React.useState('');
     const [selectedColor, setSelectedColor] = React.useState('');
-    const [priceRange, setPriceRange] = React.useState(50);
+    const [price_max, setPrice_Max] = React.useState(50);
+    const [price_min,setPrice_Min] = React.useState(0);
     const [filterOpen, setFilterOpen] = React.useState(false);
     const [searchOpen, setSearchOpen] = React.useState(false);
+    const [searchText,setSearchText] = React.useState('')
    const colors = ['red', 'blue', 'green', 'yellow', 'black'];
   
 
@@ -30,6 +31,13 @@ const SearchBar = (props: Props) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+  const handleSearch = ()=>{
+    const searchParams = new URLSearchParams();
+    searchParams.append('gender',selectedGender.trim())
+    searchParams.append('price_max',parseSprice_max)
+    searchParams.append('price_max',price_max)
+
+  }
   return (
     <div className="relative">
             <button onClick={() => setSearchOpen(!searchOpen)} className="text-xl p-2 rounded-full bg-gray-200">
@@ -44,11 +52,16 @@ const SearchBar = (props: Props) => {
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <div className="absolute top-0 left-full transform -translate-x-full flex items-center space-x-2 bg-white rounded-lg shadow px-4 py-2 w-64">
+              <div className="absolute top-0 left-full transform -translate-x-full flex items-center space-x-2 bg-white rounded-lg shadow px-4 py-2 w-80">
+              <button onClick={handleSearch} className="text-xl p-2 rounded-full">
+              🔍
+                </button>
                 <input
                   type="text"
                   placeholder="Search..."
                   className="border-0 focus:outline-none focus:ring-0 w-full"
+                  value={searchText}
+                  onChange={(e)=> setSearchText(e.target.value)}
                 />
                 <button
                   onClick={() => setFilterOpen(!filterOpen)}
@@ -123,16 +136,28 @@ const SearchBar = (props: Props) => {
 
                 {/* Price Filter */}
                 <div>
-                  <label className="block font-medium mb-2">Price</label>
+                  <label className="block font-medium mb-2">Min-Price</label>
                   <input
                     type="range"
                     min="0"
                     max="100"
-                    value={priceRange}
-                    onChange={(e) => setPriceRange(Number(e.target.value))}
+                    value={price_min}
+                    onChange={(e) => setPrice_Min(Number(e.target.value))}
                     className="w-full"
                   />
-                  <div className="text-right">${priceRange}</div>
+                  <div className="text-right">${price_min}</div>
+                </div>
+                <div>
+                  <label className="block font-medium mb-2">Max-Price</label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value={price_max}
+                    onChange={(e) => setPrice_Max(Number(e.target.value))}
+                    className="w-full"
+                  />
+                  <div className="text-right">${price_max}</div>
                 </div>
               </div>
             </Transition>

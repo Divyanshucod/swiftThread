@@ -3,10 +3,11 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import SearchBar from './SearchBar';
+import { useState } from 'react';
 
 
 export default function Navbar() {
-
+   const [menWomenVisible,setMenWomenVisible] = useState<boolean>(false)
   return (
     <nav className="bg-white shadow-md">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -21,11 +22,11 @@ export default function Navbar() {
           {/* Nav Items */}
           <ul className="hidden md:flex space-x-6 text-lg gap-2">
             <li className="dropdown relative">
-              <button className="hover:underline">Man/Woman</button>
-              <div className="dropdown-menu absolute hidden bg-white shadow-lg rounded mt-2">
-                <Link href="#" className="block px-4 py-2 hover:bg-gray-200">Man</Link>
-                <Link href="#" className="block px-4 py-2 hover:bg-gray-200">Woman</Link>
-              </div>
+              <button className="hover:underline" onClick={()=> setMenWomenVisible(!menWomenVisible)}>Men/Women</button>
+              {menWomenVisible && <div className="dropdown-menu absolute bg-white shadow-lg rounded mt-2">
+                <Link href="/products/query?gender=Men" className="block px-4 py-2 hover:bg-gray-200">Men</Link>
+                <Link href="/products/query?gender=Women" className="block px-4 py-2 hover:bg-gray-200">Women</Link>
+              </div>}
             </li>
             <li><Link href="#" className="hover:underline">Trending</Link></li>
             <li><Link href="#" className="hover:underline">Sale</Link></li>

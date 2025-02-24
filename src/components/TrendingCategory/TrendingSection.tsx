@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export function TrendingCategory() {
     return (
@@ -7,7 +8,8 @@ export function TrendingCategory() {
           <h2 className="text-2xl font-bold mb-6">Trending Category</h2>
           <div className="flex space-x-4 overflow-x-scroll no-scrollbar">
             {['hoodies', 'jackets', 'dress', 'shoes', 'jeans', 'shirt', 'sweater'].map((category, index) => (
-              <div
+              <Link
+                href={`/products/query?category=${category}`}
                 key={index}
                 className="flex-shrink-0 w-60 bg-white rounded-lg shadow-lg overflow-hidden">
                 <Image
@@ -20,7 +22,7 @@ export function TrendingCategory() {
                 <div className="p-4">
                   <h3 className="text-lg font-bold">{category}</h3>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>

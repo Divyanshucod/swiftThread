@@ -1,5 +1,7 @@
 'use client'
 import { Transition } from '@headlessui/react';
+import { useRouter } from 'next/navigation';
+import Router from 'next/router';
 import React, { useEffect, useRef } from 'react';
 
 const SearchBar = () => {
@@ -12,6 +14,7 @@ const SearchBar = () => {
     const [filterOpen, setFilterOpen] = React.useState(false);
     const [searchOpen, setSearchOpen] = React.useState(false);
     const [searchText,setSearchText] = React.useState('')
+    const router = useRouter()
    const colors = ['red', 'blue', 'green', 'yellow', 'black'];
   
 
@@ -33,10 +36,23 @@ const SearchBar = () => {
   }, []);
   const handleSearch = ()=>{
     const searchParams = new URLSearchParams();
-    searchParams.append('gender',selectedGender.trim())
-    searchParams.append('price_max',parseSprice_max)
-    searchParams.append('price_max',price_max)
-
+     if(selectedGender !== ''){
+      searchParams.append('gender',selectedGender.trim())
+     }
+    if(filterOpen){
+      searchParams.append('price_max',price_max.toString().trim())
+      searchParams.append('price_min',price_min.toString().trim())
+    }
+    if(selectedColor !== ''){
+      searchParams.append('color',selectedColor.trim())
+    }
+    if(searchText !== ''){
+      searchParams.append('text',searchText.trim())
+    }
+    
+    if(searchParams.size !== 0){
+    return router.push(`/products/query?${searchParams}`)
+    }
   }
   return (
     <div className="relative">
@@ -142,7 +158,7 @@ const SearchBar = () => {
                     min="0"
                     max="100"
                     value={price_min}
-                    onChange={(e) => setPrice_Min(Number(e.target.value))}
+                    onChange={(e) => setPrice_Min(parseInt(e.target.value))}
                     className="w-full"
                   />
                   <div className="text-right">${price_min}</div>
@@ -154,7 +170,7 @@ const SearchBar = () => {
                     min="0"
                     max="100"
                     value={price_max}
-                    onChange={(e) => setPrice_Max(Number(e.target.value))}
+                    onChange={(e) => setPrice_Max(parseInt(e.target.value))}
                     className="w-full"
                   />
                   <div className="text-right">${price_max}</div>

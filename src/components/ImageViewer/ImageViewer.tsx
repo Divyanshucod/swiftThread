@@ -41,6 +41,8 @@ const ImageViewer: React.FC<ImageViewerProps> = ({ images, startIndex, onClose }
         src={images[currentIndex]}
         alt={`Image ${currentIndex + 1}`}
         className="max-w-full max-h-[80vh] rounded-xl shadow-lg"
+        width={500}
+        height={500}
       />
 
       <button

@@ -27,17 +27,15 @@ export function Products() {
   useEffect(()=>{
     async function getProducts() {
        try{
-          const response = await axios.get('/api/products');
-          console.log(response);
-          
-          setAllProducts(response.data.ProductInfo)
+          const response = await axios.get(`/api/cart/filterbased?category=${activeCategory}`);
+          setAllProducts(response.data.products)
        // eslint-disable-next-line @typescript-eslint/no-explicit-any
        }catch(error:any){
         toast.error(error.message)
        }
     }
     getProducts()
-  },[])
+  },[activeCategory])
 
   const handleAddToCart = async (id:string)=>{
        try {

@@ -1,5 +1,3 @@
-'use client'
-
 import Product from "@/models/productModel"
 import { NextRequest, NextResponse } from "next/server"
 import Connection from "@/dbConfig/dbConfig";

@@ -1,3 +1,4 @@
+'use client'
 import ProductDetails from "@/components/ProductsSection/ProductDetails"
 import axios from "axios"
 import { useRouter } from "next/router"

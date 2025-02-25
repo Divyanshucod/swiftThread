@@ -1,25 +1,31 @@
 import ProductDetails from "@/components/ProductsSection/ProductDetails"
-const Product = {
-    name:'firstProduct',
-    comments: [{user:'john',text:'hi best product'},{user:'rehan',text:'hi best product of all time'}],
-    images :['https://swiftthreadproducts.s3.eu-north-1.amazonaws.com/products/1740398982784-cfsbwp-hoodies.jpg',
-      'https://swiftthreadproducts.s3.eu-north-1.amazonaws.com/products/1740398984548-6vi6om-login_kids.jpg'],
-    discountedPrice:524,
-    originalPrice:1000,
-    starDistribution:[100,276,6727,762,29]
-}
-const relatedProducts = [{
-    name:'Jogers',
-    price:1099,
-    image:'https://swiftthreadproducts.s3.eu-north-1.amazonaws.com/products/1740398982784-cfsbwp-hoodies.jpg'
-},
-{
-    name:'Jeans',
-    price:1099,
-    image:'https://swiftthreadproducts.s3.eu-north-1.amazonaws.com/products/1740398984548-6vi6om-login_kids.jpg'
-}]
+import axios from "axios"
+import { useRouter } from "next/router"
+import { useEffect, useState } from "react"
+import { toast } from "react-toastify"
 export default function ProductPage(){
+    const [product,setProduct] = useState({})
+    const [relatedProducts,setRelatedProducts] = useState([])
+    const [error,setError] = useState(false)
+    const router = useRouter()
+    useEffect(()=>{
+        const fetchProduct = async ()=>{
+             try {
+                const id = router.query.slug;
+                const response = await axios.get(`/api/product?id=${id}`) // update the api endpoint from poducts to product
+                setProduct(response.data.product)
+                setRelatedProducts(response.data.relatedProducts)
+             // eslint-disable-next-line @typescript-eslint/no-explicit-any
+             } catch (error:any) {
+                toast.error(error.message)
+                setError(true)
+             }
+        }
+      fetchProduct()  
+    },[router.query.slug])
     return (
-        <ProductDetails product={Product} relatedProducts={relatedProducts}/>
+        <>
+        {error === false ? <ProductDetails product={product} relatedProducts={relatedProducts}/> : <div>Not found</div>}
+    </>
     )
 }

@@ -1,5 +1,9 @@
+Today's 
+1. add comment feature and upload and display the latest comment and also show the stars for rating
+2. create a backend to send products based on id's and also send related products
+3. change the product schema to add more things to make whole product.
+4. check whole product responsivness and fix nav bar too.
 
-1. other search filter like only category , gender, brand based filter need to add (means frontend api call only because backend will use the same api for filters)
-2. product description page : UI and add backend
-3. make the things responsive (support for multiple devices)
 
+Imp:
+for every api add check to make sure the person who is calling an api is user not vendor

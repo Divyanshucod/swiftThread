@@ -28,6 +28,16 @@ const productSchema = new mongoose.Schema({
     productImages:{
             type: [String], // ID provided by the auth provider (e.g., Google user ID)
     },
+    discountedPrice:{
+      type:String
+    },
+    starDistribution:{
+        fiveStar:{type:Number},
+        oneStar:{type:Number},
+        twoStar:{type:Number},
+        threeStar:{type:Number},
+        fourStar:{type:Number}
+    },
     createdAt: {
       type: Date,
       default: Date.now,

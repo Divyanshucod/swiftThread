@@ -1,33 +1,50 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, {useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Rating } from "./Rating";
 import { FaUserCircle } from "react-icons/fa";
 import GiveRating from "./GiveRating";
-import { toast } from "react-toastify";
-
-const ProductDetails = ({ product, relatedProducts }) => {
-  const [selectedImage, setSelectedImage] = useState(product.images[0]);
-  const [comments, setComments] = useState(product.comments || []);
-  const [newComment, setNewComment] = useState("");
-  const [newRating, setNewRating] = useState(0);
+interface Comment{
+  user:string,
+  profileImage:string,
+  rating:string,
+  comment:string
+}
+interface Product{
+    _id:string,
+    title:string,
+    price:string,
+    description:string,
+    sizes:string[],
+    gender:string,
+    material:string,
+    productImages:string[],
+    discountedPrice:string,
+    starDistribution:{
+      fiveStar:number,
+      fourStar:number,
+      threeStar:number,
+      twoStar:number,
+      oneStar:number,
+    },
+  comments:Comment[]
+}
+type props = {
+   product:Product
+   relatedProducts:Product[],
+   handleCommentSubmit: ()=> void,
+   newRating:number,
+   setNewRating: React.Dispatch<React.SetStateAction<number>>; 
+   newComment:string,
+   setNewComment: React.Dispatch<React.SetStateAction<string>>; 
+}
+const ProductDetails = ({ product, relatedProducts,handleCommentSubmit,newRating,setNewRating,newComment,setNewComment}:props) => {
+  const [selectedImage, setSelectedImage] = useState(product?.productImages[0]);
   const [isFocused, setIsFocused] = useState(false);
 
-  const handleCommentSubmit = () => {
-    try {
-      
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error:any) {
-       toast.error(error.message)
-    }
-  };
-
-  useEffect(()=>{
-
-  },[])
   return (
     <div className="p-4 max-w-7xl mx-auto grid gap-8 lg:grid-cols-2">
       {/* Product Image Section */}
@@ -40,7 +57,7 @@ const ProductDetails = ({ product, relatedProducts }) => {
           width={500}
         />
         <div className="flex mt-4 gap-2 overflow-x-auto">
-          {product.images.map((img, index) => (
+          {product.productImages.map((img, index) => (
             <Image
               key={index}
               alt="productImage"
@@ -58,13 +75,13 @@ const ProductDetails = ({ product, relatedProducts }) => {
 
       {/* Product Details Section */}
       <div className="space-y-4">
-        <h1 className="text-2xl font-bold">{product.name}</h1>
+        <h1 className="text-2xl font-bold">{product.title}</h1>
         <div className="flex items-center gap-2">
-          <span className="text-xl font-semibold text-red-500">
+          {product.discountedPrice && <span className="text-xl font-semibold text-red-500">
             ${product.discountedPrice}
-          </span>
+          </span>}
           <span className="line-through text-gray-500">
-            ${product.originalPrice}
+            ${product.price}
           </span>
         </div>
         <div className="flex gap-2">
@@ -94,13 +111,13 @@ const ProductDetails = ({ product, relatedProducts }) => {
             <Card key={index}>
               <CardContent className="p-4">
                 <Image
-                  src={item.image}
-                  alt={item.name}
+                  src={item.productImages[0]}
+                  alt={item.title}
                   className="w-full h-40 object-cover rounded-lg"
                   width={100}
                   height={100}
                 />
-                <h3 className="mt-2 font-semibold">{item.name}</h3>
+                <h3 className="mt-2 font-semibold">{item.title}</h3>
                 <p className="text-red-500">${item.price}</p>
               </CardContent>
             </Card>
@@ -118,11 +135,11 @@ const ProductDetails = ({ product, relatedProducts }) => {
           </div>
         </div>
         <div className="space-y-2">
-          <Rating stars={5} count={237} color="bg-green-500" />
-          <Rating stars={4} count={99} color="bg-green-400" />
-          <Rating stars={3} count={40} color="bg-green-300" />
-          <Rating stars={2} count={9} color="bg-yellow-400" />
-          <Rating stars={1} count={27} color="bg-red-400" />
+          <Rating stars={5} count={product.starDistribution?.fiveStar || 800} color="bg-green-500" />
+          <Rating stars={4} count={product.starDistribution?.fourStar || 700} color="bg-green-400" />
+          <Rating stars={3} count={product.starDistribution?.threeStar || 600} color="bg-green-300" />
+          <Rating stars={2} count={product.starDistribution?.twoStar || 500} color="bg-yellow-400" />
+          <Rating stars={1} count={product.starDistribution?.oneStar || 400} color="bg-red-400" />
         </div>
       </div>
 
@@ -130,13 +147,13 @@ const ProductDetails = ({ product, relatedProducts }) => {
       <div className="lg:col-span-2 mt-6">
         <h2 className="text-xl font-bold">Comments</h2>
         <div className="space-y-3">
-          {comments.map((comment, index) => (
+          {product.comments.map((comment, index) => (
             <Card key={index}>
               <CardContent className="p-3 flex gap-3 items-center">
                 <FaUserCircle className="rounded-full h-10 w-10" />
                 <div>
                   <strong>{comment.user}</strong>
-                  <p>{comment.text}</p>
+                  <p>{comment.comment}</p>
                 </div>
               </CardContent>
             </Card>

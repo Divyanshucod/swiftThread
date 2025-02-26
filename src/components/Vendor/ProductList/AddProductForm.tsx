@@ -13,7 +13,8 @@ export const AddProductForm =() => {
     price: '',
     gender: '',
     material: '',
-    images: [] as File[], // Store actual files
+    images: [] as File[],
+     // Store actual files
   });
 
   const [previewImages, setPreviewImages] = useState<string[]>([]); // Store preview URLs

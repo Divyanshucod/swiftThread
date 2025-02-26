@@ -1,8 +1,6 @@
 Today's 
-1. add comment feature and upload and display the latest comment and also show the stars for rating
-2. create a backend to send products based on id's and also send related products
-3. change the product schema to add more things to make whole product.
-4. check whole product responsivness and fix nav bar too.
+1. add support to add discount and update post api accodingly
+2. handle starDistribution update thing : done
 
 
 Imp:

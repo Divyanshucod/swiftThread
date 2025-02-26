@@ -38,6 +38,14 @@ const productSchema = new mongoose.Schema({
         threeStar:{type:Number},
         fourStar:{type:Number}
     },
+    comments:[
+      {
+        name:{type:String,required:true},
+        profileImage:{type:String},
+        comment:{type:String},
+        rating:{type:Number}
+      }
+    ],
     createdAt: {
       type: Date,
       default: Date.now,

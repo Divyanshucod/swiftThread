@@ -42,7 +42,7 @@ type props = {
    setNewComment: React.Dispatch<React.SetStateAction<string>>; 
 }
 const ProductDetails = ({ product, relatedProducts,handleCommentSubmit,newRating,setNewRating,newComment,setNewComment}:props) => {
-  const [selectedImage, setSelectedImage] = useState(product?.productImages[0]);
+  const [selectedImage, setSelectedImage] = useState(product?.productImages?.[0] ?? '/login_woman.jpg');
   const [isFocused, setIsFocused] = useState(false);
 
   return (
@@ -52,12 +52,12 @@ const ProductDetails = ({ product, relatedProducts,handleCommentSubmit,newRating
         <Image
           src={selectedImage}
           alt="Product"
-          className="w-full h-auto rounded-2xl shadow-lg"
-          height={500}
-          width={500}
+          className="w-full h-2/3 rounded-2xl shadow-lg"
+          height={400}
+          width={400}
         />
         <div className="flex mt-4 gap-2 overflow-x-auto">
-          {product.productImages.map((img, index) => (
+          {product?.productImages?.length ? product.productImages.map((img, index) => (
             <Image
               key={index}
               alt="productImage"
@@ -69,19 +69,19 @@ const ProductDetails = ({ product, relatedProducts,handleCommentSubmit,newRating
                 selectedImage === img ? "border-black" : "border-transparent"
               }`}
             />
-          ))}
+          )) : <p className="text-gray-500">No images available</p>}
         </div>
       </div>
 
       {/* Product Details Section */}
       <div className="space-y-4">
-        <h1 className="text-2xl font-bold">{product.title}</h1>
+        <h1 className="text-2xl font-bold">{product?.title ?? "No Title Available"}</h1>
         <div className="flex items-center gap-2">
-          {product.discountedPrice && <span className="text-xl font-semibold text-red-500">
+          {product?.discountedPrice && <span className="text-xl font-semibold text-red-500">
             ${product.discountedPrice}
           </span>}
-          <span className="line-through text-gray-500">
-            ${product.price}
+          <span className={`${ product?.discountedPrice ? 'line-through text-gray-500' : 'text-xl font-semibold text-green-500'}`}>
+            ${product?.price ?? "N/A"}
           </span>
         </div>
         <div className="flex gap-2">
@@ -99,7 +99,7 @@ const ProductDetails = ({ product, relatedProducts,handleCommentSubmit,newRating
         {/* Description Section */}
         <div className="mt-4">
           <h2 className="text-xl font-bold">Description</h2>
-          <p className="text-gray-700">{product.description}</p>
+          <p className="text-gray-700">{product?.description ?? "No description available"}</p>
         </div>
       </div>
 
@@ -135,11 +135,11 @@ const ProductDetails = ({ product, relatedProducts,handleCommentSubmit,newRating
           </div>
         </div>
         <div className="space-y-2">
-          <Rating stars={5} count={product.starDistribution?.fiveStar || 800} color="bg-green-500" />
-          <Rating stars={4} count={product.starDistribution?.fourStar || 700} color="bg-green-400" />
-          <Rating stars={3} count={product.starDistribution?.threeStar || 600} color="bg-green-300" />
-          <Rating stars={2} count={product.starDistribution?.twoStar || 500} color="bg-yellow-400" />
-          <Rating stars={1} count={product.starDistribution?.oneStar || 400} color="bg-red-400" />
+          <Rating stars={5} count={product?.starDistribution?.fiveStar ?? 0} color="bg-green-500" />
+          <Rating stars={4} count={product.starDistribution?.fourStar ?? 0} color="bg-green-400" />
+          <Rating stars={3} count={product.starDistribution?.threeStar ?? 0} color="bg-green-300" />
+          <Rating stars={2} count={product.starDistribution?.twoStar ?? 0} color="bg-yellow-400" />
+          <Rating stars={1} count={product.starDistribution?.oneStar ?? 0} color="bg-red-400" />
         </div>
       </div>
 
@@ -147,7 +147,7 @@ const ProductDetails = ({ product, relatedProducts,handleCommentSubmit,newRating
       <div className="lg:col-span-2 mt-6">
         <h2 className="text-xl font-bold">Comments</h2>
         <div className="space-y-3">
-          {product.comments.map((comment, index) => (
+          {product?.comments?.length ? product.comments.map((comment, index) => (
             <Card key={index}>
               <CardContent className="p-3 flex gap-3 items-center">
                 <FaUserCircle className="rounded-full h-10 w-10" />
@@ -157,7 +157,7 @@ const ProductDetails = ({ product, relatedProducts,handleCommentSubmit,newRating
                 </div>
               </CardContent>
             </Card>
-          ))}
+          )) : <p>No Comments</p>}
         </div>
         <div
           className="flex gap-2 mt-4 relative"

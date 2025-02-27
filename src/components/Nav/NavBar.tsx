@@ -4,10 +4,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import SearchBar from './SearchBar';
 import { useState } from 'react';
-
+import Cookies from 'js-cookie';
+import { FaUserCircle } from 'react-icons/fa';
 
 export default function Navbar() {
    const [menWomenVisible,setMenWomenVisible] = useState<boolean>(false)
+   const userId = Cookies.get("userId");
   return (
     <nav className="bg-white shadow-md">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -37,10 +39,10 @@ export default function Navbar() {
         <div className="flex items-center space-x-4 gap-3">
           {/* Search Bar */}
           <SearchBar/>
-
-          <Link href='/login' className="text-lg font-medium hover:underline">Login</Link>
-          <Link href='/signup' className="text-lg font-medium hover:underline">Sign Up</Link>
+           {!userId && <><Link href='/login' className="text-lg font-medium hover:underline">Login</Link> 
+          <Link href='/signup' className="text-lg font-medium hover:underline">Sign Up</Link> </> }
           <Link href='/cart' className="text-xl p-2 rounded-full bg-gray-200">🛒</Link>
+          {userId && <FaUserCircle className="rounded-full h-10 w-10" />}
         </div>
       </div>
     </nav>

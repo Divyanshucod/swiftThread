@@ -2,12 +2,14 @@
 import ImageViewer from '@/components/ImageViewer/ImageViewer';
 import axios from 'axios';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 
 interface Product {
+  _id:string;
   title: string;
   price: number;
   productImages: string[];
@@ -63,7 +65,7 @@ export default function QueriedProducts() {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
       {/* <p className='text-center font-medium text-2xl'>Total found Products {totleFoundPro}</p>  for showing the no of matched products*/} 
       {products.map((product, idx) => (
-        <div key={idx} className="border rounded-2xl shadow-lg p-4">
+        <Link key={idx} href={`/products/${product._id}`} className="border rounded-2xl shadow-lg p-4">
           <Image
             src={product.productImages[0]}
             alt={product.title}
@@ -96,7 +98,7 @@ export default function QueriedProducts() {
               </span>
             ))}
           </div>
-        </div>
+        </Link>
       ))}
       {visibleLoadMore && <button className='text-white bg-blue-500 rounded-sm py-2 px-4' onClick={()=> setPage(page+1)}>Load More</button>}
       {selectedImages && (

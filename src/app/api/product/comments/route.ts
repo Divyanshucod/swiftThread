@@ -9,7 +9,7 @@ export async function POST(req:NextRequest){
         const reqBody = await req.json()
         const {newComment,newRating,id} = reqBody
         //getting name 
-        console.log(newComment,newRating,id);
+        // console.log(newComment,newRating,id);
         
         const userName = await getUserName();
         const ratingField = `starDistribution.${map[newRating-1]}Star`;

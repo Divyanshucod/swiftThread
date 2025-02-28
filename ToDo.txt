@@ -1,5 +1,4 @@
 Today's 
-1. fix nav bar so if user id login so don't let the user to access /login or /signup route untill logout
 2. fix UI for product page and whole website and test it throughly from every cases
 
 

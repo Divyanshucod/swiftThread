@@ -25,7 +25,9 @@ export default function AuthSection({ type }: Prop) {
     "/login_pant_shirt.jpg",
     "/login_woman.jpg",
   ];
-
+  const handleRedirect = ()=>{
+    window.location.href = '/';
+  }
   const formik = useFormik({
     initialValues: {
       firstName: "",
@@ -68,7 +70,7 @@ export default function AuthSection({ type }: Prop) {
           if(decodedToken && decodedToken.isVendor){
             return router.push('/vendor/products')
           }
-          router.push('/')
+          handleRedirect()
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {

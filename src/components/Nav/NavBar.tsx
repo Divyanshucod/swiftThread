@@ -32,15 +32,13 @@ export default function Navbar() {
 
         {/* Mobile View Icons */}
         <div className="flex items-center space-x-4 md:hidden">
-          {!searchOpen && (
-            <button onClick={() => setSearchOpen(true)} className="text-xl p-2 rounded-full bg-gray-200">🔍</button>
-          )}
+        <SearchBar />
           <Link href='/cart' className="text-xl p-2 rounded-full bg-gray-200">🛒</Link>
-          <PiTShirtDuotone className="text-2xl cursor-pointer" onClick={() => setMenuOpen(true)} />
+          <PiTShirtDuotone className="text-2xl cursor-pointer bg-gray-200 rounded-full m-3 h-10 w-10 p-2" onClick={() => setMenuOpen(true)} />
         </div>
 
         {/* Desktop View Navigation */}
-        <ul className="hidden md:flex space-x-6 text-lg gap-2">
+        <ul className="hidden md:flex space-x-7 text-lg gap-2">
           <li className="relative">
             <button onClick={() => setMenWomenVisible(!menWomenVisible)} className="hover:underline">Men/Women</button>
             {menWomenVisible && (
@@ -68,16 +66,6 @@ export default function Navbar() {
           <Link href='/cart' className="text-xl p-2 rounded-full bg-gray-200">🛒</Link>
         </div>
       </div>
-
-      {/* Floating Search Bar for Small Screens */}
-      {searchOpen && (
-        <div className="fixed top-16 left-0 w-full flex justify-center bg-white py-2 shadow-lg">
-          <div className="w-full max-w-md flex items-center px-4">
-            <SearchBar />
-            <button onClick={() => setSearchOpen(false)} className="ml-2 text-gray-600 text-xl">✖</button>
-          </div>
-        </div>
-      )}
 
       {/* Mobile Side Menu */}
       {menuOpen && (

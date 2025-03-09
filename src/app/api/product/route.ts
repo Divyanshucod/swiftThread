@@ -13,7 +13,24 @@ export async function GET(req:NextRequest){
         if(!product){
             return NextResponse.json({message:"Didn't find a product with the given id"},{status:400})
         }
-        const relatedProducts = await Product.find({material:product.material,_id: { $ne: product._id }},{ comments: 0, starDistribution: 0 }); // this should be generated based on recommendation system.
+        const relatedProducts = await Product.aggregate([
+            {
+              $search: {
+                index: "embedding", 
+                knnBeta: {
+                  vector: product.embedding,
+                  path: "embedding",
+                  k: 5 // Number of similar products to fetch
+                }
+              }
+            },
+            {
+              $match: { _id: { $ne: product._id } }
+            },
+            {
+              $project: { comments: 0, starDistribution: 0 }
+            }
+          ]);// this should be generated based on recommendation system.
         return NextResponse.json({product: product,relatedProducts:relatedProducts},{status:200})
     }
     catch(error){

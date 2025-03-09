@@ -14,15 +14,18 @@ export const AddProductForm =() => {
     gender: '',
     material: '',
     images: [] as File[],
+    category:'',
+    brand:'',
      // Store actual files
   });
 
   const [previewImages, setPreviewImages] = useState<string[]>([]); // Store preview URLs
 
   const sizes = ['S', 'M', 'L', 'XL', 'XXL'];
-  const materials = ['Cotton', 'Polyester', 'Wool', 'Silk', 'Denim'];
+  const materials = ["Denim","Cotton", "Rayon", "Woolen","Silk","Linen","Mesh","Recycled Polyester","Nylon","Cashmere"];
   const genders = ['Men', 'Women', 'Kids', 'Unisex'];
-
+  const categories = ["Jeans", "T-shirt", "Leggings","Jacket", "Hoodies","Pants", "Pajamas", "Tops", "Shorts", "Sneakers"]
+  // const colors = [{color:"#0000FF",colorName:'blue'}, "#FF0000", "#000000", "#FFFFFF", "#808080", "#FFC0CB", "#FFA500", "#008000"]
   const handleSizeToggle = (size: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -51,7 +54,9 @@ export const AddProductForm =() => {
       setPreviewImages((prev) => [...prev, ...newPreviews]);
     }
   };
+  // const handleColorChange = ()=>{
 
+  // }
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -68,12 +73,11 @@ export const AddProductForm =() => {
         productData.append("price", formData.price);
         productData.append("gender", formData.gender);
         productData.append("material", formData.material);
+        productData.append('category',formData.category);
+        productData.append('brand',formData.brand)
         formData.images.forEach((image) => productData.append("images", image)); // Append images as file
         
         const response = await axios.post('/api/vendors/products',productData)
-        console.log(response);
-        
-        toast.success(response.data.message);
         
         toast.success(response.data.message);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -90,6 +94,7 @@ export const AddProductForm =() => {
       <h2 className="text-xl font-bold mb-4">Add New Product</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input type="text" name="title" placeholder="Title" className="w-full p-2 border rounded" onChange={handleChange} required />
+        <input type="text" name="brand" placeholder="Brand" className="w-full p-2 border rounded" onChange={handleChange} required />
         <textarea name="description" placeholder="Description" className="w-full p-2 border rounded" onChange={handleChange} required />
         
         <div className="flex gap-2">
@@ -115,7 +120,16 @@ export const AddProductForm =() => {
             <option key={material} value={material}>{material}</option>
           ))}
         </select>
-
+          
+        <select name="category" className="w-full p-2 border rounded" onChange={handleChange} required>
+          <option value="">Select Category</option>
+          {categories.map((category) => (
+            <option key={category} value={category}>{category}</option>
+          ))}
+        </select>
+        {/* <div>
+           {colors.map((color,index) => (<span className={`bg-[${color}] rounded-full w-5 h-5 cursor-pointer`} key={index} onClick={handleColorChange}></span>))}
+        </div> */}
         {/* Image Upload Field */}
         <input type="file" name="images" className="w-full p-2 border rounded" accept="image/*" multiple onChange={handleImageChange} />
 

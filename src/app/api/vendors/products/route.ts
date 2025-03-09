@@ -4,6 +4,7 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import Connection from "@/dbConfig/dbConfig";
 import Vendor from "@/models/vendorModel";
 import { getUserVendorId } from "@/handlers/getUserVendorId";
+import generateEmbeddingAWS from "@/handlers/generateEmbeddingAWS";
 
 const credentials = {
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -27,7 +28,20 @@ export async function POST(req: NextRequest) {
     const gender = reqBody.get("gender") as string;
     const material = reqBody.get("material") as string;
     const imageFiles = reqBody.getAll("images") as File[];
-
+    const category = reqBody.get("category") as string;
+    const brand = reqBody.get("brand") as string
+    console.log({
+      title:title,
+      description:description,
+      sizes:sizes,
+      price:price,
+      gender:gender,
+      material:material,
+      imageFiles:imageFiles,
+      category:category,
+      brand:brand
+    });
+    
     if (
       !title ||
       !description ||
@@ -35,7 +49,9 @@ export async function POST(req: NextRequest) {
       !price ||
       !gender ||
       !material ||
-      imageFiles.length === 0
+      imageFiles.length === 0 ||
+      !category || 
+      !brand
     ) {
       return NextResponse.json(
         { message: "Missing required fields" },
@@ -59,7 +75,7 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-
+    const textEmbedding = await generateEmbeddingAWS(`Title:${title} Brand:${brand} Material${material} Category:${category}}`);
     const imageUrls: string[] = [];
 
     for (const imageFile of imageFiles) {
@@ -76,7 +92,7 @@ export async function POST(req: NextRequest) {
       const fileUrl = `https://${bucketName}.s3.${region}.amazonaws.com/${params.Key}`;
       imageUrls.push(fileUrl);
     }
-
+    
     const newProduct = new Product({
       title,
       description,
@@ -85,6 +101,9 @@ export async function POST(req: NextRequest) {
       gender,
       material,
       productImages: imageUrls,
+      category,
+      embedding:textEmbedding,
+      brand,
     });
 
     const val = await newProduct.save();

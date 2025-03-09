@@ -31,6 +31,12 @@ const productSchema = new mongoose.Schema({
     discountedPrice:{
       type:String
     },
+    category:{
+      type:String
+    },
+    embedding:{
+      type: [Number]
+    },
     starDistribution:{
         fiveStar:{type:Number},
         oneStar:{type:Number},
@@ -46,6 +52,9 @@ const productSchema = new mongoose.Schema({
         rating:{type:Number}
       }
     ],
+    brand:{
+      type:String
+    },
     createdAt: {
       type: Date,
       default: Date.now,
